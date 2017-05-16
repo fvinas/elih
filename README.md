@@ -20,7 +20,7 @@ import elih
 explain_prediction(clf, valid_xs[1], vec=vec)
 ```
 
-![An explanation with raw features](https://github.com/fvinas/elih/blob/master/doc/example1.png =300x)
+![An explanation with raw features](https://github.com/fvinas/elih/blob/master/doc/example1.png)
 
 ```python
 elih.group(
@@ -31,7 +31,7 @@ elih.group(
 )
 ```
 
-![An explanation with Pclass features regrouped in one place](https://github.com/fvinas/elih/blob/master/doc/example2.png =300x)
+![An explanation with Pclass features regrouped in one place](https://github.com/fvinas/elih/blob/master/doc/example2.png)
 
 ## TODO
 
