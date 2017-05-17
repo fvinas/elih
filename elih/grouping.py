@@ -28,7 +28,7 @@ def group(explanation, rules):
 
 	# Start by reversing the rules:
 	# {'A': ['1', '2'], 'B': ['3']} to {'1': 'A', '2': 'A', '3': 'B'}
-	new_rules = {old_field: grouped_field for (grouped_field, old_fields) in rules.iteritems() for old_field in old_fields}
+	new_rules = {old_field: grouped_field for (grouped_field, old_fields) in rules.items() for old_field in old_fields}
 
 	new_weights = {}
 	for feature_weight in explanation.targets[0].feature_weights.pos + explanation.targets[0].feature_weights.neg:
@@ -54,7 +54,7 @@ def group(explanation, rules):
 			}
 
 	new_features = []
-	for new_feature, new_feature_weight in new_weights.iteritems():
+	for new_feature, new_feature_weight in new_weights.items():
 		obj = FeatureWeight(feature=new_feature, weight=new_feature_weight['weight'], std=new_feature_weight['std'], value=new_feature_weight['value'])
 		new_features.append(obj)
 
