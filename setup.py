@@ -16,4 +16,4 @@ setup(
 		'eli5 >= 0.6'
 	],
 	zip_safe=False
-)	
+)
