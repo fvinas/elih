@@ -18,13 +18,13 @@ class FeatureWeightGroup(FeatureWeight):
 			self.group = group
 
 	def __repr__(self):
-		return '{}(feature={}, weight={}, std={}, value={}, group=[{}])'.format(
+		return "{}(feature='{}', weight={}, std={}, value={}, group={})".format(
 			'FeatureWeightGroup',
 			self.feature,
 			self.weight,
 			self.std,
 			self.value,
-			self.group.__repr__()
+			self.group
 		)
 
 
