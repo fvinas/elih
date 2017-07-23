@@ -1,5 +1,7 @@
 # -*- encoding: utf-8 -*-
 
+import fnmatch
+
 import numpy as np
 
 from eli5.base import FeatureWeights, FeatureWeight
@@ -10,7 +12,7 @@ class FeatureWeightGroup(FeatureWeight):
 	regrouped to build up this new FeatureWeight.
 	"""
 
-	def __init__(self, feature, weight,	std=None, value=None, group=None):
+	def __init__(self, feature, weight, std=None, value=None, group=None):
 		FeatureWeight.__init__(self, feature, weight, std=std, value=value)
 		if group is None:
 			self.group = []
@@ -39,20 +41,29 @@ def group(explanation, rules):
 
 	Args:
 		explanation: An ELI5 Explanation object (typically the output of explain_prediction).
-		rules: a dictionary whose keys are new grouped feature names and whose values are lists of feature names that will be regrouped
+		rules: a dictionary of rules whose keys are new grouped feature names and whose values are either:
+			- lists of exact feature names that will be regrouped
+			- string for pattern matching in a "Unix-file" flavour (e.g. 'Embarked=*', 'Class*')
 
 	Returns:
 		An Explanation object with the new grouped features
 
 	"""
 
+	# Start by getting out the generic rules ('Variable=*') cause they are processed in a different way:
+	generic_rules = {
+		v: k for (k, v) in rules.items() if isinstance(v, basestring)
+	}
 	# Start by reversing the rules:
 	# {'A': ['1', '2'], 'B': ['3']} to {'1': 'A', '2': 'A', '3': 'B'}
-	new_rules = {old_field: grouped_field for (grouped_field, old_fields) in rules.items() for old_field in old_fields}
-
+	new_rules = {old_field: grouped_field for (grouped_field, old_fields) in rules.items() if not isinstance(old_fields, basestring) for old_field in old_fields}
 	new_weights = {}
 	for feature_weight in explanation.targets[0].feature_weights.pos + explanation.targets[0].feature_weights.neg:
+		matched = False
+
+		# 'Old feature' matches a standard rule?
 		if feature_weight.feature in new_rules:
+			matched = True
 			# Feature is grouped with others
 			grouped_feature = new_rules[feature_weight.feature]
 			if grouped_feature in new_weights:
@@ -67,7 +78,26 @@ def group(explanation, rules):
 					'value': np.nan,
 					'group': [feature_weight]
 				}
-		else:
+
+		# Match generic rule?
+		for rule, grouped_feature in generic_rules.iteritems():
+			if fnmatch.fnmatch(feature_weight.feature, rule):
+				matched = True
+				if grouped_feature in new_weights:
+					# Add weight to already created grouped feature
+					new_weights[grouped_feature]['weight'] = new_weights[grouped_feature]['weight'] + feature_weight.weight
+					new_weights[grouped_feature]['group'].append(feature_weight)
+				else:
+					# Create new grouped feature
+					new_weights[grouped_feature] = {
+						'weight': feature_weight.weight,
+						'std': None,
+						'value': np.nan,
+						'group': [feature_weight]
+					}
+
+		# No match for this feature => remains the same
+		if not matched:
 			# Feature remains the same
 			new_weights[feature_weight.feature] = {
 				'weight': feature_weight.weight,
