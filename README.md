@@ -26,7 +26,7 @@ explain_prediction(clf, valid_xs[1], vec=vec)
 elih.group(
     explain_prediction(clf, valid_xs[1], vec=vec),
     {
-        'Pclass_value': ['Pclass=1', 'Pclass=2', 'Pclass=3']
+        'Pclass': ['Pclass=1', 'Pclass=2', 'Pclass=3']
     }
 )
 ```
