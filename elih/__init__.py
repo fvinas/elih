@@ -5,5 +5,14 @@ __version__ = '0.1'
 
 from .explanation import HumanExplanation
 
-from .grouping import group
-from .grouping import FeatureWeightGroup
+from .features import group
+from .features import FeatureWeightGroup
+
+from .formatters import (
+	percent,
+	delta_percent,
+	value,
+	text,
+	integer,
+	value_simplified
+)

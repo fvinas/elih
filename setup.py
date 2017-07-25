@@ -13,7 +13,7 @@ setup(
 	license="",
 	packages=["elih"],
 	install_requires=[
-		'eli5 >= 0.6'
+		'eli5 >= 0.6.1'
 	],
 	zip_safe=False
 )

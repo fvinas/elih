@@ -1,0 +1,48 @@
+
+<br/>
+
+<big><b>Variables used by the model:</b></big>
+<table>
+    <thead>
+    <tr>
+        <th>Feature name</th>
+        <th>Label</th>
+        <th>Built from # variables?</th>
+        <th>Raw value</th>
+        <th>Formatted value</th>
+        <th>Weight</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for feature in features %}
+        <tr>
+            <td>{{ feature.feature }}</td>
+            {% if feature.dictionary is not none %}
+                <td>{{ feature.dictionary.label }}</td>
+            {% else %}
+                <td></td>
+            {% endif %}
+            <td>XXX</td>
+            <td>{{ feature.value }}</td>
+            <td>{{ feature.formatted_value }}</td>
+            <td>{{ feature.weight }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<br/>
+
+<big><b>Additional explanatory variables:</b></big>
+<table>
+    <thead>
+    <tr>
+        <th>Raw variable</th>
+        <th>Label</th>
+        <th>Raw value</th>
+        <th>Formatted value</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
