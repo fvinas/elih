@@ -22,7 +22,11 @@
             {% else %}
                 <td></td>
             {% endif %}
-            <td>XXX</td>
+            {% if feature.group is not none %}
+                <td>{{ feature.group|length }}</td>
+            {% else %}
+                <td></td>
+            {% endif %}
             <td>{{ feature.value }}</td>
             <td>{{ feature.formatted_value }}</td>
             <td>{{ feature.weight }}</td>
