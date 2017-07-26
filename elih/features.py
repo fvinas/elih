@@ -5,6 +5,8 @@ import fnmatch
 
 from eli5.base import FeatureWeights, FeatureWeight
 
+from .helpers import _extract_mapped_value, _extract_formatted_value
+
 
 class EnrichedFeatureWeight(FeatureWeight):
 	"""Enriches ELI5 FeatureWeight with additional 'human explanation' data like
@@ -54,28 +56,6 @@ class FeatureWeightGroup(EnrichedFeatureWeight):
 			self.dictionary,
 			self.group
 		)
-
-
-def _extract_mapped_value(additional_features, dictionary, grouped_feature):
-	value_from = None
-	if grouped_feature in dictionary and 'value_from' in dictionary[grouped_feature]:
-		try:
-			value_from = additional_features[dictionary[grouped_feature]['value_from']]
-		except IndexError:
-			raise IndexError("Variable {} required but not provided with the additional features.".format(dictionary[grouped_feature]['value_from']))
-	return value_from
-
-
-def _extract_formatted_value(value, dictionary, feature_name):
-	formatted_value = None
-	if value is None:
-		return None
-	if feature_name in dictionary and 'formatter' in dictionary[feature_name]:
-		try:
-			formatted_value = dictionary[feature_name]['formatter'](value)
-		except:
-			raise Exception("Exception when generating the formatted value for variable {} with value {}.".format(feature_name, value))
-	return formatted_value
 
 
 def group(explanation, rules, additional_features=None, dictionary=None):

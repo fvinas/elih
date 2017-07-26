@@ -48,5 +48,17 @@
     </tr>
     </thead>
     <tbody>
+    {% for feature_name, feature in additional_features.items() %}
+        <tr>
+            <td>{{ feature_name }}</td>
+            {% if feature.label is not none %}
+                <td>{{ feature.label }}</td>
+            {% else %}
+                <td></td>
+            {% endif %}
+            <td>{{ feature.value }}</td>
+            <td>{{ feature.formatted_value }}</td>
+        </tr>
+    {% endfor %}
     </tbody>
 </table>

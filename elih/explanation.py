@@ -4,7 +4,12 @@ import copy
 
 from jinja2 import Environment, PackageLoader, select_autoescape
 
-from .helpers import _extract_from_dictionary
+from .helpers import (
+	_extract_from_dictionary,
+	_extract_mapped_value,
+	_extract_formatted_value,
+	_extract_label
+)
 from .features import group
 
 
@@ -48,13 +53,28 @@ class HumanExplanation(object):
 		if additional_features is None:
 			self.additional_features = []
 		else:
-			self.additional_features = additional_features
+			# self.additional_features = additional_features
+			self.additional_features = self._translate_additional_features(additional_features, dictionary)
+
 		if dictionary is None:
 			self.dictionary = {}
 		else:
 			self.dictionary = dictionary
 		self.rules = rules
 		self.explanation = group(explanation, rules, additional_features, dictionary)
+
+	def _translate_additional_features(self, additional_features, dictionary):
+		new_dict = {}
+		for feature_name, value in additional_features.iteritems():
+			feature_dict = {}
+			# value is not supposed to change because it's coming directly from the source (so, can be controlled)
+			feature_dict['value'] = value
+			# formatted_value takes the value and formats it
+			feature_dict['formatted_value'] = _extract_formatted_value(value, dictionary, feature_name)
+			feature_dict['label'] = _extract_label(dictionary, feature_name)
+
+			new_dict[feature_name] = feature_dict
+		return new_dict
 
 	def __repr__(self):
 		return '{}(explanation={}, additional_features={})'.format(
