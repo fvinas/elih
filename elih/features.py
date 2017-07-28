@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 
-
+import copy
 import fnmatch
 
 from eli5.base import FeatureWeights, FeatureWeight
@@ -58,7 +58,7 @@ class FeatureWeightGroup(EnrichedFeatureWeight):
 		)
 
 
-def group(explanation, rules, additional_features=None, dictionary=None):
+def apply_rules_layer(explanation, rules, additional_features=None, dictionary=None):
 	"""Regroups several feature weights into one brand new feature weight, whose weight is the sum of the ones from the underlying feature weights.
 
 	The new feature weight will be created inside the FeatureWeights object of the explanation, while the previous weights are discarded.
@@ -79,6 +79,9 @@ def group(explanation, rules, additional_features=None, dictionary=None):
 		An Explanation object with the new grouped features
 
 	"""
+
+	# Otherwise the object is modified by reference
+	explanation = copy.deepcopy(explanation)
 
 	if additional_features is None:
 		additional_features = {}

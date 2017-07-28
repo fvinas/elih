@@ -6,11 +6,10 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 
 from .helpers import (
 	_extract_from_dictionary,
-	_extract_mapped_value,
 	_extract_formatted_value,
 	_extract_label
 )
-from .features import group
+from .features import apply_rules_layer
 
 
 env = Environment(
@@ -49,19 +48,29 @@ class HumanExplanation(object):
 	'''A layer on top of ELI5 Explanation object to provide additional services
 	'''
 
-	def __init__(self, explanation, rules, additional_features=None, dictionary=None):
+	def __init__(self, explanation, rules_layers, additional_features=None, dictionary=None):
+		if type(rules_layers) is dict:
+			# Only one layer of rules was provided
+			rules_layers = [rules_layers]
 		if additional_features is None:
 			self.additional_features = []
 		else:
-			# self.additional_features = additional_features
 			self.additional_features = self._translate_additional_features(additional_features, dictionary)
 
 		if dictionary is None:
 			self.dictionary = {}
 		else:
 			self.dictionary = dictionary
-		self.rules = rules
-		self.explanation = group(explanation, rules, additional_features, dictionary)
+
+		self.rules_layers = rules_layers
+		self.explanation_layers = []
+		for index, rules in enumerate(rules_layers):
+			if index > 0:
+				previous_explanation = self.explanation_layers[index - 1]
+			else:
+				previous_explanation = explanation
+			new_explanation = apply_rules_layer(previous_explanation, rules, additional_features, dictionary)
+			self.explanation_layers.append(new_explanation)
 
 	def _translate_additional_features(self, additional_features, dictionary):
 		new_dict = {}
@@ -77,21 +86,19 @@ class HumanExplanation(object):
 		return new_dict
 
 	def __repr__(self):
-		return '{}(explanation={}, additional_features={})'.format(
-			'HumanExplanation',
-			self.explanation.__repr__(),
-			translate_keys(self.additional_features, self.dictionary)
-		)
+		all_repr = ''
+		for layer in self.explanation_layers:
+			all_repr += '{}(explanation={}, additional_features={})'.format(
+				'HumanExplanation',
+				layer.__repr__(),
+				translate_keys(self.additional_features, self.dictionary)
+			)
+		return all_repr
 
 	def _repr_html_(self):
-		features = self.explanation.targets[0].feature_weights.pos + self.explanation.targets[0].feature_weights.neg
 		template = env.get_template('human_explanation.html')
-		return template.render(features=features, additional_features=self.additional_features)
-
-	# TODO: won't work since our features values can be strings as well (ELI5 doesn't handle it)
-	# def _repr_html_(self):
-	#	return '{}<br/><b>{}</b><pre>{}</pre>'.format(
-	#		format_as_html(translate_explanation(self.explanation, self.dictionary), force_weights=False, show=fields.WEIGHTS, show_feature_values=True),
-	#		'Additional features',
-	#		translate_keys(self.additional_features, self.dictionary)
-	#	)
+		layers = []
+		for index, layer in enumerate(self.explanation_layers):
+			features = layer.targets[0].feature_weights.pos + layer.targets[0].feature_weights.neg
+			layers.append(features)
+		return template.render(layers=layers, additional_features=self.additional_features)

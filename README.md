@@ -35,11 +35,12 @@ elih.group(
 
 ## TODO
 
-- implement `HumanExplanation.to_json()` or `.to_dict()` to easily export to a web UI
-- several cycles of grouping until all variables are generated? (some can be the result of some other groups...)
-- add ability to put own function to go from a proba or a XGBoost score to a calibrated score
-- implement `HumanExplanation._repr_html_()` in the way ELI5 did? (unfortunately for some formatting reason we cannot use theirs)
-- draw a Matplotlib radar chart?
+- implement several layers of rules (computed turn by turn)
+- implement a basic (but custom) scoring system (with by default a sigmoid)
+- improve export to standard Python dict & list
+- implement a Matplotlib radar chart
+- implement another layer called "interpretors"
+- implement a final layer called "agregators" that regroups variables (from any layer + additional ones) and interprations to display
 - add a additional rendering layer? automatic sentences?
 - provide a config-file like way to write business rules
 

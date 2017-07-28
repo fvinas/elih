@@ -1,43 +1,45 @@
 
-<br/>
+<h1>Human explanation</h1>
 
-<big><b>Variables used by the model:</b></big>
-<table>
-    <thead>
-    <tr>
-        <th>Feature name</th>
-        <th>Label</th>
-        <th>Built from # variables?</th>
-        <th>Raw value</th>
-        <th>Formatted value</th>
-        <th>Weight</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for feature in features %}
+<h2>Variables used by the model</h2>
+{% for features in layers %}
+    <h3>Rules layer {{ loop.index }}</h3>
+    <table>
+        <thead>
         <tr>
-            <td>{{ feature.feature }}</td>
-            {% if feature.dictionary is not none %}
-                <td>{{ feature.dictionary.label }}</td>
-            {% else %}
-                <td></td>
-            {% endif %}
-            {% if feature.group is not none %}
-                <td>{{ feature.group|length }}</td>
-            {% else %}
-                <td></td>
-            {% endif %}
-            <td>{{ feature.value }}</td>
-            <td>{{ feature.formatted_value }}</td>
-            <td>{{ feature.weight }}</td>
+            <th>Feature name</th>
+            <th>Label</th>
+            <th># underlying variables</th>
+            <th>Raw value</th>
+            <th>Formatted value</th>
+            <th>ELI5 weight</th>
         </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
+        </thead>
+        <tbody>
+        {% for feature in features %}
+            <tr>
+                <td>{{ feature.feature }}</td>
+                {% if feature.dictionary is not none %}
+                    <td>{{ feature.dictionary.label }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+                {% if feature.group is not none %}
+                    <td>{{ feature.group|length }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+                <td>{{ feature.value }}</td>
+                <td>{{ feature.formatted_value }}</td>
+                <td>{{ feature.weight }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endfor %}
 <br/>
 
-<big><b>Additional explanatory variables:</b></big>
+<h2>Additional explanatory variables</h2>
 <table>
     <thead>
     <tr>
