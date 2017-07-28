@@ -97,6 +97,10 @@ def apply_rules_layer(explanation, rules, additional_features=None, dictionary=N
 	new_rules = {old_field: grouped_field for (grouped_field, old_fields) in rules.items() if not isinstance(old_fields, basestring) for old_field in old_fields}
 	new_weights = {}
 	for feature_weight in explanation.targets[0].feature_weights.pos + explanation.targets[0].feature_weights.neg:
+
+		if feature_weight.feature == '<BIAS>':
+			continue
+
 		matched = False
 
 		# 'Old feature' matches a standard rule?
@@ -203,7 +207,7 @@ def apply_rules_layer(explanation, rules, additional_features=None, dictionary=N
 	# To build a FeatureWeights object, we then need to sort features by weight and separate positives and negatives:
 	feature_weights = FeatureWeights(
 		pos=sorted([f for f in new_features if f.weight >= 0], key=(lambda o: abs(o.weight)), reverse=True),
-		neg=sorted([f for f in new_features if f.weight < 0], key=(lambda o: abs(o.weight)), reverse=True)
+		neg=sorted([f for f in new_features if f.weight < 0], key=(lambda o: abs(o.weight)), reverse=False)
 	)
 
 	explanation.targets[0].feature_weights = feature_weights

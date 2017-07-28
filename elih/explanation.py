@@ -3,6 +3,7 @@
 import copy
 
 from jinja2 import Environment, PackageLoader, select_autoescape
+from eli5.formatters.html import format_hsl, weight_color_hsl
 
 from .helpers import (
 	_extract_from_dictionary,
@@ -10,12 +11,18 @@ from .helpers import (
 	_extract_label
 )
 from .features import apply_rules_layer
+from .helpers import format_weight
 
 
 env = Environment(
 	loader=PackageLoader('elih', 'templates'),
 	autoescape=select_autoescape(['html'])
 )
+
+env.filters.update(dict(
+	weight_color=lambda w, w_range: format_hsl(weight_color_hsl(w, w_range)),
+	format_weight=format_weight
+))
 
 
 def translate_explanation(explanation, dictionary):
@@ -100,5 +107,12 @@ class HumanExplanation(object):
 		layers = []
 		for index, layer in enumerate(self.explanation_layers):
 			features = layer.targets[0].feature_weights.pos + layer.targets[0].feature_weights.neg
-			layers.append(features)
-		return template.render(layers=layers, additional_features=self.additional_features)
+			weight_range = abs(max([f.weight for f in features]))
+			layers.append({
+				"features": features,
+				"weight_range": weight_range
+			})
+		return template.render(
+			layers=layers,
+			additional_features=self.additional_features
+		)

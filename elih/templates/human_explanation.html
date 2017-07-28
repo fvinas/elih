@@ -2,8 +2,8 @@
 <h1>Human explanation</h1>
 
 <h2>Variables used by the model</h2>
-{% for features in layers %}
-    <h3>Rules layer {{ loop.index }}</h3>
+{% for layer in layers %}
+    <h3>After rules layer {{ loop.index }}</h3>
     <table>
         <thead>
         <tr>
@@ -12,12 +12,12 @@
             <th># underlying variables</th>
             <th>Raw value</th>
             <th>Formatted value</th>
-            <th>ELI5 weight</th>
+            <th>Contribution</th>
         </tr>
         </thead>
         <tbody>
-        {% for feature in features %}
-            <tr>
+        {% for feature in layer.features %}
+            <tr style="background-color: {{ feature.weight|weight_color(layer.weight_range) }}">
                 <td>{{ feature.feature }}</td>
                 {% if feature.dictionary is not none %}
                     <td>{{ feature.dictionary.label }}</td>
@@ -31,13 +31,12 @@
                 {% endif %}
                 <td>{{ feature.value }}</td>
                 <td>{{ feature.formatted_value }}</td>
-                <td>{{ feature.weight }}</td>
+                <td>{{ "%0.4f"|format(feature.weight) }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 {% endfor %}
-<br/>
 
 <h2>Additional explanatory variables</h2>
 <table>
