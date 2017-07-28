@@ -2,7 +2,10 @@
 # ELIH: Explain Machine Learning predictions like I'm a human
 
 A library to translate Machine Learning classifiers predictions in a human understandable and simplified form.
-Based on the ELI5 library, on top of which ELIH adds explanations transformation and formatting layers to make it easy to customize for each project or language.
+
+Based on the ELI5 library, ELIH adds to the raw ELI5 outputs several layers of transformations, dictionary, formatting, scoring and interpretors to make raw ML explanations understandable by a non data scientist (your client, a customer facing colleague, etc.).
+
+In some way, it does the opposite of what some feature engineering techniques do: if you dummy-encode your variables, if from series you extract some aggregates (max, mean, ...), ELI5 will explain your predictions based on these "technical" variables. For instance, ELIH allows you to bring business sense back by grouping all related variables, on top of other features (values formatting, variables dictionary, ...).
 
 Still in early stage! But feel free to test & discuss.
 
@@ -22,6 +25,8 @@ explain_prediction(clf, valid_xs[1], vec=vec)
 
 ![An explanation with raw features](https://github.com/fvinas/elih/blob/master/doc/example1.png)
 
+This explanation is the output of ELI5. You have everything, but it's mostly a technical view for you datascientist. You cannot really use it with external stakeholders (your clients, customer facing people, etc.).
+
 ```python
 elih.group(
     explain_prediction(clf, valid_xs[1], vec=vec),
@@ -35,7 +40,6 @@ elih.group(
 
 ## TODO
 
-- implement several layers of rules (computed turn by turn)
 - implement a basic (but custom) scoring system (with by default a sigmoid)
 - improve export to standard Python dict & list
 - implement a Matplotlib radar chart
@@ -43,5 +47,7 @@ elih.group(
 - implement a final layer called "agregators" that regroups variables (from any layer + additional ones) and interprations to display
 - add a additional rendering layer? automatic sentences?
 - provide a config-file like way to write business rules
+- support for multiple targets classifiers
+- support for regressors
 
 

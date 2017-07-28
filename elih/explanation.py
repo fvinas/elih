@@ -53,7 +53,7 @@ class HumanExplanation(object):
 	'''A layer on top of ELI5 Explanation object to provide additional services
 	'''
 
-	def __init__(self, explanation, rules_layers, additional_features=None, dictionary=None):
+	def __init__(self, explanation, rules_layers, additional_features=None, dictionary=None, scoring=None):
 		if type(rules_layers) is dict:
 			# Only one layer of rules was provided
 			rules_layers = [rules_layers]
@@ -67,6 +67,8 @@ class HumanExplanation(object):
 		else:
 			self.dictionary = dictionary
 
+		self.scoring = scoring
+
 		self.rules_layers = rules_layers
 		self.explanation_layers = []
 		for index, rules in enumerate(rules_layers):
@@ -74,7 +76,7 @@ class HumanExplanation(object):
 				previous_explanation = self.explanation_layers[index - 1]
 			else:
 				previous_explanation = explanation
-			new_explanation = apply_rules_layer(previous_explanation, rules, additional_features, dictionary)
+			new_explanation = apply_rules_layer(previous_explanation, rules, additional_features, dictionary, scoring)
 			self.explanation_layers.append(new_explanation)
 
 	def _translate_additional_features(self, additional_features, dictionary):
@@ -107,8 +109,8 @@ class HumanExplanation(object):
 			features = layer.targets[0].feature_weights.pos + layer.targets[0].feature_weights.neg
 			weight_range = abs(max([f.weight for f in features]))
 			layers.append({
-				"features": features,
-				"weight_range": weight_range
+				'features': features,
+				'weight_range': weight_range
 			})
 		return template.render(
 			layers=layers,

@@ -16,17 +16,21 @@ class EnrichedFeatureWeight(FeatureWeight):
 	def __init__(self, *args, **kwargs):
 		self.dictionary = kwargs['dictionary'] if 'dictionary' in kwargs else None
 		self.formatted_value = kwargs['formatted_value'] if 'formatted_value' in kwargs else None
+		self.score = kwargs['score'] if 'score' in kwargs else None
 		if 'dictionary' in kwargs:
 			del kwargs['dictionary']
 		if 'formatted_value' in kwargs:
 			del kwargs['formatted_value']
+		if 'score' in kwargs:
+			del kwargs['score']
 		FeatureWeight.__init__(self, *args, **kwargs)
 
 	def __repr__(self):
-		return "{}(feature='{}', weight={}, std={}, value={}, formatted_value={}, dictionary={})".format(
+		return "{}(feature='{}', weight={}, score={}, std={}, value={}, formatted_value={}, dictionary={})".format(
 			'EnrichedFeatureWeight',
 			self.feature,
 			self.weight,
+			self.score,
 			self.std,
 			self.value,
 			self.formatted_value,
@@ -46,10 +50,11 @@ class FeatureWeightGroup(EnrichedFeatureWeight):
 		EnrichedFeatureWeight.__init__(self, *args, **kwargs)
 
 	def __repr__(self):
-		return "{}(feature='{}', weight={}, std={}, value={}, formatted_value={}, dictionary={}, group={})".format(
+		return "{}(feature='{}', weight={}, score={}, std={}, value={}, formatted_value={}, dictionary={}, group={})".format(
 			'FeatureWeightGroup',
 			self.feature,
 			self.weight,
+			self.score,
 			self.std,
 			self.value,
 			self.formatted_value,
@@ -58,7 +63,7 @@ class FeatureWeightGroup(EnrichedFeatureWeight):
 		)
 
 
-def apply_rules_layer(explanation, rules, additional_features=None, dictionary=None):
+def apply_rules_layer(explanation, rules, additional_features=None, dictionary=None, scoring=None):
 	"""Regroups several feature weights into one brand new feature weight, whose weight is the sum of the ones from the underlying feature weights.
 
 	The new feature weight will be created inside the FeatureWeights object of the explanation, while the previous weights are discarded.
@@ -117,6 +122,7 @@ def apply_rules_layer(explanation, rules, additional_features=None, dictionary=N
 				new_weights[grouped_feature] = {
 					'feature': grouped_feature,
 					'weight': feature_weight.weight,
+					'score': scoring(feature_weight.weight) if scoring is not None else None,
 					'std': None,
 					'value': _mapped_value,
 					'formatted_value': _extract_formatted_value(_mapped_value, dictionary, grouped_feature),
@@ -126,6 +132,7 @@ def apply_rules_layer(explanation, rules, additional_features=None, dictionary=N
 			new_weights[grouped_feature]['group'].append({
 				'feature': feature_weight.feature,
 				'weight': feature_weight.weight,
+				'score': scoring(feature_weight.weight) if scoring is not None else None,
 				'std': feature_weight.std,
 				'value': feature_weight.value,
 				'formatted_value': _extract_formatted_value(feature_weight.value, dictionary, feature_weight.feature),
@@ -145,6 +152,7 @@ def apply_rules_layer(explanation, rules, additional_features=None, dictionary=N
 					new_weights[grouped_feature] = {
 						'feature': grouped_feature,
 						'weight': feature_weight.weight,
+						'score': scoring(feature_weight.weight) if scoring is not None else None,
 						'std': None,
 						'value': _mapped_value,
 						'formatted_value': _extract_formatted_value(_mapped_value, dictionary, grouped_feature),
@@ -154,6 +162,7 @@ def apply_rules_layer(explanation, rules, additional_features=None, dictionary=N
 				new_weights[grouped_feature]['group'].append({
 					'feature': feature_weight.feature,
 					'weight': feature_weight.weight,
+					'score': scoring(feature_weight.weight) if scoring is not None else None,
 					'std': feature_weight.std,
 					'value': feature_weight.value,
 					'formatted_value': _extract_formatted_value(feature_weight.value, dictionary, feature_weight.feature),
@@ -166,6 +175,7 @@ def apply_rules_layer(explanation, rules, additional_features=None, dictionary=N
 			new_weights[feature_weight.feature] = {
 				'feature': feature_weight.feature,
 				'weight': feature_weight.weight,
+				'score': scoring(feature_weight.weight) if scoring is not None else None,
 				'std': feature_weight.std,
 				'value': feature_weight.value,
 				'formatted_value': _extract_formatted_value(feature_weight.value, dictionary, feature_weight.feature),
@@ -178,6 +188,7 @@ def apply_rules_layer(explanation, rules, additional_features=None, dictionary=N
 			obj = FeatureWeightGroup(
 				feature=new_feature_weight['feature'],
 				weight=new_feature_weight['weight'],
+				score=new_feature_weight['score'],
 				std=new_feature_weight['std'],
 				value=new_feature_weight['value'],
 				formatted_value=new_feature_weight['formatted_value'],
@@ -185,6 +196,7 @@ def apply_rules_layer(explanation, rules, additional_features=None, dictionary=N
 					EnrichedFeatureWeight(
 						feature=f['feature'],
 						weight=f['weight'],
+						score=f['score'],
 						std=f['std'],
 						value=f['value'],
 						formatted_value=f['formatted_value'],
@@ -197,6 +209,7 @@ def apply_rules_layer(explanation, rules, additional_features=None, dictionary=N
 			obj = EnrichedFeatureWeight(
 				feature=new_feature_weight['feature'],
 				weight=new_feature_weight['weight'],
+				score=new_feature_weight['score'],
 				std=new_feature_weight['std'],
 				value=new_feature_weight['value'],
 				formatted_value=new_feature_weight['formatted_value'],

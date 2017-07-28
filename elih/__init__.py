@@ -8,6 +8,8 @@ from .explanation import HumanExplanation
 from .features import apply_rules_layer
 from .features import FeatureWeightGroup
 
+from .scoring import score
+
 from .formatters import (
 	percent,
 	delta_percent,
