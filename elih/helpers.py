@@ -44,7 +44,3 @@ def _extract_formatted_value(value, dictionary, feature_name):
 		except:
 			raise Exception("Exception when generating the formatted value for variable {} with value {}.".format(feature_name, value))
 	return formatted_value
-
-
-def format_weight(value):
-	return '{:+.3f}'.format(value)

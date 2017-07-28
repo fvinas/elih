@@ -11,7 +11,6 @@ from .helpers import (
 	_extract_label
 )
 from .features import apply_rules_layer
-from .helpers import format_weight
 
 
 env = Environment(
@@ -20,8 +19,7 @@ env = Environment(
 )
 
 env.filters.update(dict(
-	weight_color=lambda w, w_range: format_hsl(weight_color_hsl(w, w_range)),
-	format_weight=format_weight
+	weight_color=lambda w, w_range: format_hsl(weight_color_hsl(w, w_range))
 ))
 
 
