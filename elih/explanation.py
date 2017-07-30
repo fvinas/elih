@@ -166,11 +166,6 @@ class HumanExplanation(object):
 			interpretations=self.interpretations
 		)
 
-	def display(layers=None):
-		if layers is None:
-			layers = range(self.explanation_layers)
-		
-
 	def to_dict(self):
 		return_obj = {}
 
