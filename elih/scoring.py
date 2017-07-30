@@ -12,5 +12,5 @@ def sigmoid(x):
 	return 1 / (1 + math.exp(-x))
 
 
-def score(scale):
-	return (lambda w: scale * sigmoid(w))
+def score(scale=20, speed=1):
+	return (lambda w: scale * sigmoid(w * speed))
