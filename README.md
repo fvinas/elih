@@ -5,7 +5,7 @@ A library to translate Machine Learning classifiers predictions in a human under
 
 Based on the ELI5 library, ELIH adds to the raw ELI5 outputs several layers of transformations, dictionary, formatting, scoring and interpretors to make raw ML explanations understandable by a non data scientist (your client, a customer facing colleague, etc.).
 
-In some way, it does the opposite of what some feature engineering techniques do: if you dummy-encode your variables, if from series you extract some aggregates (max, mean, ...), ELI5 will explain your predictions based on these "technical" variables. For instance, ELIH allows you to bring business sense back by grouping all related variables, on top of other features (values formatting, variables dictionary, ...).
+In a way, it does the opposite of what some feature engineering techniques do: if you dummy-encode your variables or from series you compute some aggregates (max, mean, ...) that are used as input variables by the model, ELI5 will explain your predictions based on these "internal" or "technical" variables. ELIH allows you to bring business sense back to the explanation, by grouping all related variables, formatting their value, giving them a human-readable label...
 
 Still in early stage! But feel free to test & discuss.
 
@@ -41,7 +41,6 @@ elih.group(
 ## TODO
 
 - implement a Matplotlib radar chart
-- implement another layer called "interpretors"
 - implement a final layer called "agregators" that regroups variables (from any layer + additional ones) and interprations to display
 - add a additional rendering layer? automatic sentences?
 - provide a config-file like way to write business rules

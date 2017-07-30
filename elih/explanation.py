@@ -49,11 +49,30 @@ def translate_keys(dict, dictionary):
 	return new_dict
 
 
+def apply_interpretors(interpretors, all_variables_with_value, all_variables_with_formatted_value):
+	interpretations = {}
+	for interpretation_code, interpretation_rules in interpretors.iteritems():
+		if interpretation_rules['assert'](all_variables_with_value):
+			interpretations[interpretation_code] = interpretation_rules['interpretation'](all_variables_with_formatted_value)
+		else:
+			if 'not_interpretation' in interpretation_rules:
+				interpretations[interpretation_code] = interpretation_rules['not_interpretation'](all_variables_with_formatted_value)
+	return interpretations
+
+
 class HumanExplanation(object):
 	'''A layer on top of ELI5 Explanation object to provide additional services
 	'''
 
-	def __init__(self, explanation, rules_layers, additional_features=None, dictionary=None, scoring=None):
+	def __init__(
+			self,
+			explanation,
+			rules_layers,
+			additional_features=None,
+			dictionary=None,
+			scoring=None,
+			interpretors=None
+	):
 		if type(rules_layers) is dict:
 			# Only one layer of rules was provided
 			rules_layers = [rules_layers]
@@ -69,6 +88,7 @@ class HumanExplanation(object):
 
 		self.scoring = scoring
 
+		# Apply rules layers
 		self.rules_layers = rules_layers
 		self.explanation_layers = []
 		for index, rules in enumerate(rules_layers):
@@ -78,6 +98,33 @@ class HumanExplanation(object):
 				previous_explanation = explanation
 			new_explanation = apply_rules_layer(previous_explanation, rules, additional_features, dictionary, scoring)
 			self.explanation_layers.append(new_explanation)
+
+		# Aggregate (valued) variables coming from everywhere, then apply interpretors
+		all_variables_with_value = {}  # for asserts
+		all_variables_with_formatted_value = {}  # for interpretations
+		for layer in self.explanation_layers:
+			for feature in layer.targets[0].feature_weights.pos + layer.targets[0].feature_weights.neg:
+				if feature.value is not None:
+					all_variables_with_value[feature.feature] = feature.value
+				if feature.value is not None and feature.formatted_value is not None:
+					all_variables_with_formatted_value[feature.feature] = {
+						'value': feature.value,
+						'formatted_value': feature.formatted_value
+					}
+		for variable, value in self.additional_features.iteritems():
+			if 'value' in value:
+				all_variables_with_value[variable] = value['value']
+				if 'formatted_value' in value:
+					all_variables_with_formatted_value[variable] = {
+						'value': value['value'],
+						'formatted_value': value['formatted_value']
+					}
+				else:
+					all_variables_with_formatted_value[variable] = {
+						'value': value['value']
+					}
+
+		self.interpretations = apply_interpretors(interpretors, all_variables_with_value, all_variables_with_formatted_value)
 
 	def _translate_additional_features(self, additional_features, dictionary):
 		new_dict = {}
@@ -95,10 +142,11 @@ class HumanExplanation(object):
 	def __repr__(self):
 		all_repr = ''
 		for layer in self.explanation_layers:
-			all_repr += '{}(explanation={}, additional_features={})'.format(
+			all_repr += '{}(explanation={}, additional_features={}, interpretations={})'.format(
 				'HumanExplanation',
 				layer.__repr__(),
-				translate_keys(self.additional_features, self.dictionary)
+				translate_keys(self.additional_features, self.dictionary),
+				self.interpretations
 			)
 		return all_repr
 
@@ -114,7 +162,8 @@ class HumanExplanation(object):
 			})
 		return template.render(
 			layers=layers,
-			additional_features=self.additional_features
+			additional_features=self.additional_features,
+			interpretations=self.interpretations
 		)
 
 	def to_dict(self):
@@ -132,5 +181,8 @@ class HumanExplanation(object):
 
 		# Additional variables
 		return_obj['additional_variables'] = translate_keys(self.additional_features, self.dictionary)
+
+		# Interpretations
+		return_obj['interpretations'] = self.interpretations
 
 		return return_obj
