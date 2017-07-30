@@ -116,3 +116,21 @@ class HumanExplanation(object):
 			layers=layers,
 			additional_features=self.additional_features
 		)
+
+	def to_dict(self):
+		return_obj = {}
+
+		# Explanation layers
+		layers = []
+		for layer in self.explanation_layers:
+			layer_obj = {
+				"pos": [f.to_dict() for f in layer.targets[0].feature_weights.pos],
+				"neg": [f.to_dict() for f in layer.targets[0].feature_weights.neg]
+			}
+			layers.append(layer_obj)
+		return_obj['explanation_layers'] = layers
+
+		# Additional variables
+		return_obj['additional_variables'] = translate_keys(self.additional_features, self.dictionary)
+
+		return return_obj

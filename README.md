@@ -40,7 +40,6 @@ elih.group(
 
 ## TODO
 
-- implement a basic (but custom) scoring system (with by default a sigmoid)
 - improve export to standard Python dict & list
 - implement a Matplotlib radar chart
 - implement another layer called "interpretors"

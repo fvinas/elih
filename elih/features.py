@@ -37,6 +37,17 @@ class EnrichedFeatureWeight(FeatureWeight):
 			self.dictionary
 		)
 
+	def to_dict(self):
+		return {
+			"feature": self.feature,
+			"weight": self.weight,
+			"score": self.score,
+			"std": self.std,
+			"value": self.value,
+			"formatted_value": self.formatted_value,
+			"label": self.dictionary["label"] if self.dictionary is not None and 'label' in self.dictionary else None
+		}
+
 
 class FeatureWeightGroup(EnrichedFeatureWeight):
 	"""A class derived from ELI5's FeatureWeight to store the initial FeatureWeight-s
@@ -61,6 +72,18 @@ class FeatureWeightGroup(EnrichedFeatureWeight):
 			self.dictionary,
 			self.group
 		)
+
+	def to_dict(self):
+		return {
+			"feature": self.feature,
+			"weight": self.weight,
+			"score": self.score,
+			"std": self.std,
+			"value": self.value,
+			"formatted_value": self.formatted_value,
+			"label": self.dictionary["label"] if self.dictionary is not None and 'label' in self.dictionary else None,
+			"group": [f.to_dict() for f in self.group]
+		}
 
 
 def apply_rules_layer(explanation, rules, additional_features=None, dictionary=None, scoring=None):
