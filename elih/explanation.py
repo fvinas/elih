@@ -106,11 +106,11 @@ class HumanExplanation(object):
 			for feature in layer.targets[0].feature_weights.pos + layer.targets[0].feature_weights.neg:
 				if feature.value is not None:
 					all_variables_with_value[feature.feature] = feature.value
-				if feature.value is not None and feature.formatted_value is not None:
-					all_variables_with_formatted_value[feature.feature] = {
-						'value': feature.value,
-						'formatted_value': feature.formatted_value
-					}
+					if feature.formatted_value is not None:
+						all_variables_with_formatted_value[feature.feature] = {
+							'value': feature.value,
+							'formatted_value': feature.formatted_value
+						}
 		for variable, value in self.additional_features.iteritems():
 			if 'value' in value:
 				all_variables_with_value[variable] = value['value']
@@ -165,6 +165,11 @@ class HumanExplanation(object):
 			additional_features=self.additional_features,
 			interpretations=self.interpretations
 		)
+
+	def display(layers=None):
+		if layers is None:
+			layers = range(self.explanation_layers)
+		
 
 	def to_dict(self):
 		return_obj = {}

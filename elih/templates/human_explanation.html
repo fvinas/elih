@@ -4,76 +4,11 @@
 <h2>Variables used by the model</h2>
 {% for layer in layers %}
     <h3>After rules layer {{ loop.index }}</h3>
-    <table>
-        <thead>
-        <tr>
-            <th>Feature name</th>
-            <th>Label</th>
-            <th># underlying variables</th>
-            <th>Raw value</th>
-            <th>Formatted value</th>
-            <th>Contribution</th>
-            <th>Score</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for feature in layer.features %}
-            <tr style="background-color: {{ feature.weight|weight_color(layer.weight_range) }}">
-                <td>{{ feature.feature }}</td>
-                {% if feature.dictionary is not none %}
-                    <td>{{ feature.dictionary.label }}</td>
-                {% else %}
-                    <td></td>
-                {% endif %}
-                {% if feature.group is not none %}
-                    <td>{{ feature.group|length }}</td>
-                {% else %}
-                    <td></td>
-                {% endif %}
-                <td>{{ feature.value }}</td>
-                <td>{{ feature.formatted_value }}</td>
-                <td>{{ "%0.4f"|format(feature.weight) }}</td>
-                <td>{{ "%0.1f"|format(feature.score) }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    {% include "explanation_layer.html" with context %}
 {% endfor %}
 
 <h2>Additional explanatory variables</h2>
-<table>
-    <thead>
-    <tr>
-        <th>Raw variable</th>
-        <th>Label</th>
-        <th>Raw value</th>
-        <th>Formatted value</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for feature_name, feature in additional_features.items() %}
-        <tr>
-            <td>{{ feature_name }}</td>
-            {% if feature.label is not none %}
-                <td>{{ feature.label }}</td>
-            {% else %}
-                <td></td>
-            {% endif %}
-            <td>{{ feature.value }}</td>
-            <td>{{ feature.formatted_value }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+{% include "additional_variables.html" with context %}
 
 <h2>Interpretations</h2>
-<table>
-    <tbody>
-    {% for code, text in interpretations.items() %}
-        <tr>
-            <td>{{ code }}</td>
-            <td>{{ text }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+{% include "interpretations.html" with context %}
