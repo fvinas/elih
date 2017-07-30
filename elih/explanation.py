@@ -151,7 +151,7 @@ class HumanExplanation(object):
 		return all_repr
 
 	def _repr_html_(self):
-		template = env.get_template('human_explanation.html')
+		template = env.get_template('explanation.html')
 		layers = []
 		for index, layer in enumerate(self.explanation_layers):
 			features = layer.targets[0].feature_weights.pos + layer.targets[0].feature_weights.neg
