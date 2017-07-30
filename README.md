@@ -40,7 +40,6 @@ elih.group(
 
 ## TODO
 
-- improve export to standard Python dict & list
 - implement a Matplotlib radar chart
 - implement another layer called "interpretors"
 - implement a final layer called "agregators" that regroups variables (from any layer + additional ones) and interprations to display
