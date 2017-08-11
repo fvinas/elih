@@ -27,7 +27,7 @@
             {% endif %}
             <td>{{ feature.value }}</td>
             <td>{{ feature.formatted_value }}</td>
-            <td>{{ "%0.4f"|format(feature.weight) }}</td>
+            <td>{{ "%+0.4f"|format(feature.weight) }}</td>
             <td>{{ "%0.1f"|format(feature.score) }}</td>
         </tr>
     {% endfor %}
