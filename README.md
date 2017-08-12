@@ -196,20 +196,20 @@ fill grouped variables from the rules layers with a value, can be used by the in
 
 - `dictionary` - (optional, defaults to `None`) a `dict` whose key is the name of a variable to provide ELIH with additional information on. This variable can either be a model input variable given through the `explanation`, an additional variable provided with `additional_features`, or a new grouped variable defined through the `rules_layers` (from any layer).
 
-Dictionary for variable can take several arguments - all optional:
+    Dictionary for variable can take several arguments - all optional:
 
-..- `label` - a `string` to provide ELIH with a human understandable label for the variable
-..- `value_from` - only applicable for grouped variables created in the rules layers. A `string` to provide ELIH with the name of an additional variable (from `additional_features`) from which the grouped variable will take its value (especially useful when considering *dummy decoding* - see example above)
-..- `formatter` - provides ELIH with a formatter for this variable. A formatter is a lambda function whose role is to pretty print the value of a variable. ELIH comes with several standard formatters for common cases (displaying units, mapping of values, simplifying values with `k`, `M`, `B`, ...) but any custom formatter can also be used (see example above).
+    - `label` - a `string` to provide ELIH with a human understandable label for the variable
+    - `value_from` - only applicable for grouped variables created in the rules layers. A `string` to provide ELIH with the name of an additional variable (from `additional_features`) from which the grouped variable will take its value (especially useful when considering *dummy decoding* - see example above)
+    - `formatter` - provides ELIH with a formatter for this variable. A formatter is a lambda function whose role is to pretty print the value of a variable. ELIH comes with several standard formatters for common cases (displaying units, mapping of values, simplifying values with `k`, `M`, `B`, ...) but any custom formatter can also be used (see example above).
 
-ELIH formatters include:
-....-`elih.formatters.text`
-....-`elih.formatters.integer`
-....-`elih.formatters.value(decimals=1, unit="", sign="")`
-....-`elih.formatters.percent(decimals=1)`
-....-`elih.formatters.delta_percent(decimals=1)`
-....-`elih.formatters.value_simplified(decimals=1, unit="", prefixes=['k', 'M', 'B'], sign="")`
-....-`elih.formatters.mapper(dictionary)`
+    ELIH formatters include:
+        -`elih.formatters.text`
+        -`elih.formatters.integer`
+        -`elih.formatters.value(decimals=1, unit="", sign="")`
+        -`elih.formatters.percent(decimals=1)`
+        -`elih.formatters.delta_percent(decimals=1)`
+        -`elih.formatters.value_simplified(decimals=1, unit="", prefixes=['k', 'M', 'B'], sign="")`
+        -`elih.formatters.mapper(dictionary)`
 
 - `scoring` - TODO
 
