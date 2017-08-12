@@ -179,17 +179,19 @@ Usage
 
 - `explanation` - an ELI5 `Explanation` object (typically the output of `explain_prediction`)
 - `rules_layers` - `list` of `dict` to define rules layers (or a `dict` if only one layer).
-Each layer `dict` describes the variables grouping that will be performed by the layer.
-Keys are the newly created variables while values are the ones used to create it.
-The first layer can only use input variables from ELI5 explanation, while subsequent layers can use variables created by the previous layers.
-When a variable is not mentioned in the rules, it's kept as it was.
-You have two ways to specify underlying variables to create a group:
-..- exact match: a list of variables names (e.g `['Cabin', 'Fare', 'Ticket #', 'Pclass']`)
-..- filewise pattern matching: (e.g `Sex=*`)
+    
+    Each layer `dict` describes the variables grouping that will be performed by the layer.
+    Keys are the newly created variables while values are the ones used to create it.
+    The first layer can only use input variables from ELI5 explanation, while subsequent layers can use variables created by the previous layers.
+    When a variable is not mentioned in the rules, it's kept as it was.
+    You have two ways to specify underlying variables to create a group:
 
-By default a grouped variable has no value, but ELIH provides a way to set one (using the `dictionary` argument).
+    - exact match: a list of variables names (e.g `['Cabin', 'Fare', 'Ticket #', 'Pclass']`)
+    - filewise pattern matching: (e.g `Sex=*`)
 
-It's best to avoid re-using variables names that are already used elsewhere because it will lead to unexpected behaviours (variable created last would overwrite previous content).
+    By default a grouped variable has no value, but ELIH provides a way to set one (using the `dictionary` argument).
+
+    It's best to avoid re-using variables names that are already used elsewhere because it will lead to unexpected behaviours (variable created last would overwrite previous content).
 
 - `additional_features` - (optional, defaults to `None`) a `dict` to provide ELIH with additional variables and their values, on top of the ones used as input values by the model. These variables can then be used to
 fill grouped variables from the rules layers with a value, can be used by the interpretation rules and can be manipulated by the `dictionary` (formatting, label, ...).
@@ -203,6 +205,7 @@ fill grouped variables from the rules layers with a value, can be used by the in
     - `formatter` - provides ELIH with a formatter for this variable. A formatter is a lambda function whose role is to pretty print the value of a variable. ELIH comes with several standard formatters for common cases (displaying units, mapping of values, simplifying values with `k`, `M`, `B`, ...) but any custom formatter can also be used (see example above).
 
     ELIH formatters include:
+
         -`elih.formatters.text`
         -`elih.formatters.integer`
         -`elih.formatters.value(decimals=1, unit="", sign="")`
