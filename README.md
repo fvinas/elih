@@ -170,12 +170,15 @@ ELIH allows you to define custom interpretation rules in the form of lambda func
 
 ### Export
 
-ELIH displays fancy HTML tables to easily understand your predictions in a Jupyter Notebook, but allows you to export its output in standard Python objects (dict, list, ...) so that you can directly use its output in a production workflow or in another application.
+ELIH displays fancy HTML tables to easily understand your predictions in a Jupyter Notebook, but allows you to export its output in standard Python objects (dict, list, ...) thru its `to_dict` method so that you can directly use its output in a production workflow or in another application.
 
 Usage
 -----
 
-`elih.HumanExplanation(explanation, rules_layers, additional_features=None, dictionary=None, scoring=None, interpretors=None)`
+`elih.HumanExplanation(explanation, rules_layers, additional_features=None, dictionary=None, scoring=None, interpretors=None)`: returns a `elih.HumanExplanation` object.
+
+
+`elih.HumanExplanation` constructor arguments are:
 
 - `explanation` - an ELI5 `Explanation` object (typically the output of `explain_prediction`)
 - `rules_layers` - `list` of `dict` to define rules layers (or a `dict` if only one layer).
@@ -206,25 +209,27 @@ fill grouped variables from the rules layers with a value, can be used by the in
 
     ELIH formatters include:
 
-        - `elih.formatters.text`
-        - `elih.formatters.integer`
-        - `elih.formatters.value(decimals=1, unit="", sign="")`
-        - `elih.formatters.percent(decimals=1)`
-        - `elih.formatters.delta_percent(decimals=1)`
-        - `elih.formatters.value_simplified(decimals=1, unit="", prefixes=['k', 'M', 'B'], sign="")`
-        - `elih.formatters.mapper(dictionary)`
+     ```python
+     elih.formatters.text
+     elih.formatters.integer
+     elih.formatters.value(decimals=1, unit="", sign="")
+     elih.formatters.percent(decimals=1)
+     elih.formatters.delta_percent(decimals=1)
+     elih.formatters.value_simplified(decimals=1, unit="", prefixes=['k', 'M', 'B'], sign="")
+     elih.formatters.mapper(dictionary)
+     ``
 
 - `scoring` - ELIH provides a simple scoring system that allows you to easily generate a custom score from the ELI5 contribution weights. The `scoring` argument expects a lambda function as the scoring function. This function will transform the contribution weights into a score.
 
     You may implement it by yourself using the *sigmoid* function from `elih.scoring.sigmoid`, or use a basic score implementation like `elih.scoring.score`:
 
-```python
-def sigmoid(x):
-	return 1 / (1 + math.exp(-x))
+    ```python
+    def sigmoid(x):
+	    return 1 / (1 + math.exp(-x))
 
-def score(scale=20, speed=1):
-	return (lambda w: scale * sigmoid(w * speed))
-```
+    def score(scale=20, speed=1):
+	    return (lambda w: scale * sigmoid(w * speed))
+    ```
 
 - `interpretors` - ELIH allows you to implement custom *interpretors* so that it can automatically match (or not) interpretation defined by rules. You have to provide ELIH with a `dict` of interpretation rules.
 
@@ -246,6 +251,10 @@ def score(scale=20, speed=1):
     - `interpretation` - this lambda function is expected to return a string, being the human interpretation in case the interpretation rule defined by `assert` matched. This lambda function only argument is the same as `assert`, a `dict` with all variables known from ELIH (see example above).
 
     - `not_interpretation` - (optional) this is the opposite of `interpretation`. Will be called in case the interpretation rule did not match. If missing, there will be no interpretation in this case.
+
+
+Once you have a `HumanExplanation` object, you can either display it (via `__repr__` or `_repr_html_`) or export it to use its output in another piece of code, using its `to_dict` method.
+
 
 Roadmap
 -------
