@@ -104,7 +104,7 @@ exp = elih.HumanExplanation(
         },
         'Ticket #': {
             'label': u'Ticket number',
-            #'formatter': elih.formatters.text(),
+            'formatter': elih.formatters.text(),
             'value_from': 'Ticket'
         },
         'Pclass': {
@@ -174,6 +174,46 @@ ELIH displays fancy HTML tables to easily understand your predictions in a Jupyt
 
 Usage
 -----
+
+`elih.HumanExplanation(explanation, rules_layers, additional_features=None, dictionary=None, scoring=None, interpretors=None)`
+
+- `explanation` - an ELI5 `Explanation` object (typically the output of `explain_prediction`)
+- `rules_layers` - `list` of `dict` to define rules layers (or a `dict` if only one layer).
+Each layer `dict` describes the variables grouping that will be performed by the layer.
+Keys are the newly created variables while values are the ones used to create it.
+The first layer can only use input variables from ELI5 explanation, while subsequent layers can use variables created by the previous layers.
+When a variable is not mentioned in the rules, it's kept as it was.
+You have two ways to specify underlying variables to create a group:
+..- exact match: a list of variables names (e.g `['Cabin', 'Fare', 'Ticket #', 'Pclass']`)
+..- filewise pattern matching: (e.g `Sex=*`)
+
+By default a grouped variable has no value, but ELIH provides a way to set one (using the `dictionary` argument).
+
+It's best to avoid re-using variables names that are already used elsewhere because it will lead to unexpected behaviours (variable created last would overwrite previous content).
+
+- `additional_features` - (optional, defaults to `None`) a `dict` to provide ELIH with additional variables and their values, on top of the ones used as input values by the model. These variables can then be used to
+fill grouped variables from the rules layers with a value, can be used by the interpretation rules and can be manipulated by the `dictionary` (formatting, label, ...).
+
+- `dictionary` - (optional, defaults to `None`) a `dict` whose key is the name of a variable to provide ELIH with additional information on. This variable can either be a model input variable given through the `explanation`, an additional variable provided with `additional_features`, or a new grouped variable defined through the `rules_layers` (from any layer).
+
+Dictionary for variable can take several arguments - all optional:
+
+..- `label` - a `string` to provide ELIH with a human understandable label for the variable
+..- `value_from` - only applicable for grouped variables created in the rules layers. A `string` to provide ELIH with the name of an additional variable (from `additional_features`) from which the grouped variable will take its value (especially useful when considering *dummy decoding* - see example above)
+..- `formatter` - provides ELIH with a formatter for this variable. A formatter is a lambda function whose role is to pretty print the value of a variable. ELIH comes with several standard formatters for common cases (displaying units, mapping of values, simplifying values with `k`, `M`, `B`, ...) but any custom formatter can also be used (see example above).
+
+ELIH formatters include:
+....-`elih.formatters.text`
+....-`elih.formatters.integer`
+....-`elih.formatters.value(decimals=1, unit="", sign="")`
+....-`elih.formatters.percent(decimals=1)`
+....-`elih.formatters.delta_percent(decimals=1)`
+....-`elih.formatters.value_simplified(decimals=1, unit="", prefixes=['k', 'M', 'B'], sign="")`
+....-`elih.formatters.mapper(dictionary)`
+
+- `scoring` - TODO
+
+- `interpretors` - TODO 
 
 *TODO*
 
