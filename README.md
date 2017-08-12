@@ -206,19 +206,46 @@ fill grouped variables from the rules layers with a value, can be used by the in
 
     ELIH formatters include:
 
-        -`elih.formatters.text`
-        -`elih.formatters.integer`
-        -`elih.formatters.value(decimals=1, unit="", sign="")`
-        -`elih.formatters.percent(decimals=1)`
-        -`elih.formatters.delta_percent(decimals=1)`
-        -`elih.formatters.value_simplified(decimals=1, unit="", prefixes=['k', 'M', 'B'], sign="")`
-        -`elih.formatters.mapper(dictionary)`
+        - `elih.formatters.text`
+        - `elih.formatters.integer`
+        - `elih.formatters.value(decimals=1, unit="", sign="")`
+        - `elih.formatters.percent(decimals=1)`
+        - `elih.formatters.delta_percent(decimals=1)`
+        - `elih.formatters.value_simplified(decimals=1, unit="", prefixes=['k', 'M', 'B'], sign="")`
+        - `elih.formatters.mapper(dictionary)`
 
-- `scoring` - TODO
+- `scoring` - ELIH provides a simple scoring system that allows you to easily generate a custom score from the ELI5 contribution weights. The `scoring` argument expects a lambda function as the scoring function. This function will transform the contribution weights into a score.
 
-- `interpretors` - TODO 
+    You may implement it by yourself using the *sigmoid* function from `elih.scoring.sigmoid`, or use a basic score implementation like `elih.scoring.score`:
 
-*TODO*
+```python
+def sigmoid(x):
+	return 1 / (1 + math.exp(-x))
+
+def score(scale=20, speed=1):
+	return (lambda w: scale * sigmoid(w * speed))
+```
+
+- `interpretors` - ELIH allows you to implement custom *interpretors* so that it can automatically match (or not) interpretation defined by rules. You have to provide ELIH with a `dict` of interpretation rules.
+
+    Each rule is defined by a key, and by three characteristics given through a `dict`:
+
+    ```python
+	interpretors={
+        'PASSENGER_ALONE': {
+            'assert': lambda v: v['Parch'] == 0 and v['SibSp'] == 0,
+            'interpretation': lambda v: 'Passenger is travelling alone',
+            'not_interpretation': lambda v: 'Passenger is not travelling alone ({} other family members)'.format(v['Parch'] + v['SibSp'])
+        },
+        ...
+    }
+    ```
+
+    - `assert` - this lambda function will be evaluated to match a rule. Its only argument will be a `dict` of all variables ELIH knows about (being input variables, additional variables or variables created by rules layers). An assertion lambda function is expected to return `True` or `False`.
+
+    - `interpretation` - this lambda function is expected to return a string, being the human interpretation in case the interpretation rule defined by `assert` matched. This lambda function only argument is the same as `assert`, a `dict` with all variables known from ELIH (see example above).
+
+    - `not_interpretation` - (optional) this is the opposite of `interpretation`. Will be called in case the interpretation rule did not match. If missing, there will be no interpretation in this case.
 
 Roadmap
 -------

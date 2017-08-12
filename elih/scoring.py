@@ -2,13 +2,8 @@
 
 import math
 
-# TODO: implement a default scoring system based on a sigmoid
-# propose a simple way to map it to a 10-notches scale
-
 
 def sigmoid(x):
-	'''Classical sigmoid function
-	'''
 	return 1 / (1 + math.exp(-x))
 
 
