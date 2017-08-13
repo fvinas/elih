@@ -265,6 +265,7 @@ Roadmap
 - support for multiple targets classifiers
 - support for regressors
 - unit tests
+- move formatters to an external PyFormatters library
 
 Authors
 =======
