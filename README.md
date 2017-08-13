@@ -217,7 +217,7 @@ fill grouped variables from the rules layers with a value, can be used by the in
      elih.formatters.delta_percent(decimals=1)
      elih.formatters.value_simplified(decimals=1, unit="", prefixes=['k', 'M', 'B'], sign="")
      elih.formatters.mapper(dictionary)
-     ``
+     ```
 
 - `scoring` - ELIH provides a simple scoring system that allows you to easily generate a custom score from the ELI5 contribution weights. The `scoring` argument expects a lambda function as the scoring function. This function will transform the contribution weights into a score.
 
