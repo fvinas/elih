@@ -12,6 +12,8 @@ In a way, it does the opposite of what some feature engineering techniques do: i
 
 Along with ELI5, ELIH may also be used to debug and improve machine learning models, since it may help understand which features worked, imagine new features to add, better understand false predictions, ...
 
+ELIH has been testing to be compatible with python 2 and python 3.
+
 Still in early stage! But feel free to test & discuss.
 
 Example
