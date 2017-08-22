@@ -1,12 +1,13 @@
 # -*- encoding: utf-8 -*-
-
+from six import iteritems
+from past.builtins import basestring
 
 def _extract_from_dictionary(dictionary, field='label'):
 	'''An ELIH dictionary can embed, for each variable, either just a 'human label' or more than that
 	(description, format, etc.). This helper extracts the labels dictionary from it.
 	'''
 	extracted_labels = {}
-	for k, v in dictionary.iteritems():
+	for k, v in iteritems(dictionary):
 		if isinstance(v, basestring):
 			extracted_labels[k] = v
 		elif type(v) is dict and field in v:
