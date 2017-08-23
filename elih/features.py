@@ -3,11 +3,12 @@
 import copy
 import fnmatch
 
+from six import iteritems
+from past.builtins import basestring
 from eli5.base import FeatureWeights, FeatureWeight
 
 from .helpers import _extract_mapped_value, _extract_formatted_value
-from past.builtins import basestring #pip install future
-from six import iteritems
+
 
 class EnrichedFeatureWeight(FeatureWeight):
 	"""Enriches ELI5 FeatureWeight with additional 'human explanation' data like
@@ -117,17 +118,14 @@ def apply_rules_layer(explanation, rules, additional_features=None, dictionary=N
 	if dictionary is None:
 		dictionary = {}
 
-	#Start by getting out the generic rules (e.g. 'Variable=*') cause they are processed in a different way:
-
-	# Python 2 and 3 
-
+	# Start by getting out the generic rules (e.g. 'Variable=*') cause they are processed in a different way:
 	generic_rules = {
 		v: k for (k, v) in rules.items() if isinstance(v, basestring)
 	}
-	# Start by reversing the rules:
+
+	# Then reverse the other rules:
 	# {'A': ['1', '2'], 'B': ['3']} to {'1': 'A', '2': 'A', '3': 'B'}
 	new_rules = {old_field: grouped_field for (grouped_field, old_fields) in rules.items() if not isinstance(old_fields, basestring) for old_field in old_fields}
-
 
 	new_weights = {}
 	for feature_weight in explanation.targets[0].feature_weights.pos + explanation.targets[0].feature_weights.neg:
@@ -169,9 +167,6 @@ def apply_rules_layer(explanation, rules, additional_features=None, dictionary=N
 			})
 
 		# Match generic rule?
-
-		#Python 3 : replace iteritems by items
-
 		for rule, grouped_feature in iteritems(generic_rules):
 			if fnmatch.fnmatch(feature_weight.feature, rule):
 				matched = True

@@ -1,6 +1,8 @@
 # -*- encoding: utf-8 -*-
+
 from six import iteritems
 from past.builtins import basestring
+
 
 def _extract_from_dictionary(dictionary, field='label'):
 	'''An ELIH dictionary can embed, for each variable, either just a 'human label' or more than that
