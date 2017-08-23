@@ -13,7 +13,9 @@ setup(
 	license="",
 	packages=["elih"],
 	install_requires=[
-		'eli5 >= 0.6.1'
+		'eli5 >= 0.6.1',
+		'six',
+		'future'
 	],
 	zip_safe=False
 )

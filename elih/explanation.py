@@ -11,7 +11,7 @@ from .helpers import (
 	_extract_label
 )
 from .features import apply_rules_layer
-
+from six import iteritems
 
 env = Environment(
 	loader=PackageLoader('elih', 'templates'),
@@ -41,7 +41,7 @@ def translate_keys(dict, dictionary):
 	'''
 	new_dict = {}
 	labels_dictionary = _extract_from_dictionary(dictionary)
-	for k, v in dict.iteritems():
+	for k, v in iteritems(dict):
 		if k in labels_dictionary:
 			new_dict[labels_dictionary[k]] = v
 		else:
@@ -51,7 +51,7 @@ def translate_keys(dict, dictionary):
 
 def apply_interpretors(interpretors, all_variables_with_value, all_variables_with_formatted_value):
 	interpretations = {}
-	for interpretation_code, interpretation_rules in interpretors.iteritems():
+	for interpretation_code, interpretation_rules in iteritems(interpretors):
 		if interpretation_rules['assert'](all_variables_with_value):
 			interpretations[interpretation_code] = interpretation_rules['interpretation'](all_variables_with_formatted_value)
 		else:
@@ -71,13 +71,13 @@ class HumanExplanation(object):
 			additional_features=None,
 			dictionary=None,
 			scoring=None,
-			interpretors=None
+			interpretors={}
 	):
 		if type(rules_layers) is dict:
 			# Only one layer of rules was provided
 			rules_layers = [rules_layers]
 		if additional_features is None:
-			self.additional_features = []
+			self.additional_features = {}
 		else:
 			self.additional_features = self._translate_additional_features(additional_features, dictionary)
 
@@ -111,7 +111,8 @@ class HumanExplanation(object):
 							'value': feature.value,
 							'formatted_value': feature.formatted_value
 						}
-		for variable, value in self.additional_features.iteritems():
+
+		for variable, value in iteritems(self.additional_features):
 			if 'value' in value:
 				all_variables_with_value[variable] = value['value']
 				if 'formatted_value' in value:
@@ -128,7 +129,7 @@ class HumanExplanation(object):
 
 	def _translate_additional_features(self, additional_features, dictionary):
 		new_dict = {}
-		for feature_name, value in additional_features.iteritems():
+		for feature_name, value in iteritems(additional_features):
 			feature_dict = {}
 			# value is not supposed to change because it's coming directly from the source (so, can be controlled)
 			feature_dict['value'] = value
