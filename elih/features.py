@@ -143,6 +143,7 @@ def apply_rules_layer(explanation, rules, additional_features=None, dictionary=N
 			if grouped_feature in new_weights:
 				# Add weight to already created grouped feature
 				new_weights[grouped_feature]['weight'] = new_weights[grouped_feature]['weight'] + feature_weight.weight
+				new_weights[grouped_feature]['score'] = scoring(new_weights[grouped_feature]['weight']) if scoring is not None else None
 			else:
 				# Create new grouped feature
 				_mapped_value = _extract_mapped_value(additional_features, dictionary, grouped_feature)
@@ -173,6 +174,7 @@ def apply_rules_layer(explanation, rules, additional_features=None, dictionary=N
 				if grouped_feature in new_weights:
 					# Add weight to already created grouped feature
 					new_weights[grouped_feature]['weight'] = new_weights[grouped_feature]['weight'] + feature_weight.weight
+					new_weights[grouped_feature]['score'] = scoring(new_weights[grouped_feature]['weight']) if scoring is not None else None
 				else:
 					# Create new grouped feature
 					_mapped_value = _extract_mapped_value(additional_features, dictionary, grouped_feature)
