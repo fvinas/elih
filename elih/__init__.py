@@ -1,6 +1,6 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import absolute_import
-__version__ = '0.1'
+__version__ = '0.2.2'
 
 
 from .explanation import HumanExplanation
@@ -11,10 +11,10 @@ from .features import FeatureWeightGroup
 from .scoring import score
 
 from .formatters import (
-	percent,
-	delta_percent,
-	value,
-	text,
-	integer,
-	value_simplified
+    percent,
+    delta_percent,
+    value,
+    text,
+    integer,
+    value_simplified
 )
