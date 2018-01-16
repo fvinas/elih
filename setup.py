@@ -7,7 +7,7 @@ setup(
     version='0.2.2',
     description='A library to translate Machine Learning classifiers predictions in a human understandable and simplified form.',
     url='https://github.com/fvinas/elih',
-    download_url='https://github.com/fvinas/elih/archive/0.2.1.tar.gz',
+    download_url='https://github.com/fvinas/elih/archive/0.2.2.tar.gz',
     author='Fabien Vinas',
     author_email='fabien.vinas@gmail.com',
     license='',
