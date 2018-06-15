@@ -277,4 +277,4 @@ Originally created and maintained by [Fabien Vinas](https://github.com/fvinas)
 License
 =======
 
-Apache 2 Licensed. See LICENSE for full details.
+MIT Licensed. See LICENSE.txt for full details.

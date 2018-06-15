@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import pandas as pd
 from six import iteritems
 from past.builtins import basestring
 
@@ -39,7 +40,7 @@ def _extract_label(dictionary, feature_name):
 
 def _extract_formatted_value(value, dictionary, feature_name):
     formatted_value = None
-    if value is None:
+    if pd.isnull(value) is None:
         return None
     if feature_name in dictionary and 'formatter' in dictionary[feature_name]:
         try:

@@ -125,7 +125,9 @@ class HumanExplanation(object):
                         'value': value['value']
                     }
 
-        self.interpretations = apply_interpretors(interpretors, all_variables_with_value, all_variables_with_formatted_value)
+        self.interpretations = apply_interpretors(
+            interpretors, all_variables_with_value, all_variables_with_formatted_value
+        )
 
     def _translate_additional_features(self, additional_features, dictionary):
         new_dict = {}
